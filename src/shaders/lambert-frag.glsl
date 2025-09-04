@@ -12,15 +12,52 @@
 precision highp float;
 
 uniform vec4 u_Color; // The color with which to render this instance of geometry.
+uniform float u_Time;
 
 // These are the interpolated values out of the rasterizer, so you can't know
 // their specific values without knowing the vertices that contributed to them
 in vec4 fs_Nor;
 in vec4 fs_LightVec;
 in vec4 fs_Col;
+in vec4 fs_Pos;
 
 out vec4 out_Col; // This is the final output color that you will see on your
                   // screen for the pixel that is currently being processed.
+
+
+// START functions from https://www.shadertoy.com/view/lllSWr
+const mat3 m = mat3( 0.00,  0.80,  0.60,
+           		    -0.80,  0.36, -0.48,
+             		-0.60, -0.48,  0.64 );
+
+float hash( float n ) {
+    return fract(sin(n)*43758.5453);
+}
+
+float noise( in vec3 x ) { // in [0,1]
+    vec3 p = floor(x);
+    vec3 f = fract(x);
+
+    f = f*f*(3.-2.*f);
+
+    float n = p.x + p.y*57. + 113.*p.z;
+
+    float res = mix(mix(mix( hash(n+  0.), hash(n+  1.),f.x),
+                        mix( hash(n+ 57.), hash(n+ 58.),f.x),f.y),
+                    mix(mix( hash(n+113.), hash(n+114.),f.x),
+                        mix( hash(n+170.), hash(n+171.),f.x),f.y),f.z);
+    return res;
+}
+
+float fbm( vec3 p ) { // in [0,1]
+    float f;
+    f  = 0.5000*noise( p ); p = m*p*2.02;
+    f += 0.2500*noise( p ); p = m*p*2.03;
+    f += 0.1250*noise( p ); p = m*p*2.01;
+    f += 0.0625*noise( p );
+    return f;
+}
+// END
 
 void main()
 {
@@ -37,7 +74,9 @@ void main()
         float lightIntensity = diffuseTerm + ambientTerm;   //Add a small float value to the color multiplier
                                                             //to simulate ambient lighting. This ensures that faces that are not
                                                             //lit by our point light are not completely black.
-
+        float weight = fbm(vec3(fs_Pos.r, fs_Pos.g, fs_Pos.b));
         // Compute final shaded color
-        out_Col = vec4(diffuseColor.rgb * lightIntensity, diffuseColor.a);
+        out_Col =   vec4(diffuseColor.rgb * lightIntensity * weight * sin(u_Time / 100.0)+ 
+                    vec3(0.375,0.125,0.5625) * (1.0 - weight) * (1.0 - sin(u_Time / 100.0)), diffuseColor.a);
+
 }
