@@ -8,6 +8,6 @@ https://www.shadertoy.com/view/lllSWr
 ![clip2](https://github.com/user-attachments/assets/b3404c07-c6e8-4f92-b6c9-9511c5b33c3c)
 
 You can also change the shape and the default yellow color:
-<img width="826" alt="square" src="https://github.com/user-attachments/assets/a73c34f1-d258-4d46-bf25-f3d88d518230" />
+<img width="826"  alt="Screenshot 2025-09-05 at 12 30 44 PM" src="https://github.com/user-attachments/assets/b27d68ed-c33d-40c9-9615-bc717f4960ab" />
 
 <img width="826" alt="sphere" src="https://github.com/user-attachments/assets/b5ce0943-7ac8-4e87-b281-4d284345dac4" />
