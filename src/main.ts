@@ -13,7 +13,7 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   tesselations: 5,
-  color: 0xff0000,
+  color: 0xFFE317,
   'Load Scene': loadScene, // A function pointer, essentially
 };
 
@@ -21,7 +21,7 @@ let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
-let prevColor: number = 0xff0000;
+let prevColor: number = 0xFFE317;
 
 function loadScene() {
   // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
