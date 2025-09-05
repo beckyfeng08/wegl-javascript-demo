@@ -47,7 +47,6 @@ class OpenGLRenderer {
     prog.setViewProjMatrix(viewProj);
     prog.setGeometryColor(colorvec4);
     prog.setTime(this.time);
-    console.log(this.time);
 
     for (let drawable of drawables) {
       prog.draw(drawable);

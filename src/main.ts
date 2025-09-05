@@ -14,6 +14,7 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 const controls = {
   tesselations: 5,
   color: 0xFFE317,
+  currobject: "Cube",
   'Load Scene': loadScene, // A function pointer, essentially
 };
 
@@ -22,10 +23,11 @@ let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
 let prevColor: number = 0xFFE317;
+let shapeList = ["Cube", "Square", "Icosphere"];
 
 function loadScene() {
-  // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
-  // icosphere.create();
+  icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
+  icosphere.create();
   square = new Square(vec3.fromValues(0, 0, 0));
   square.create();
   cube = new Cube(vec3.fromValues(0, 0, 0));
@@ -46,6 +48,12 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
+  gui.add(controls, 'currobject', shapeList)
+     .name('Object')
+     .onChange((currobject) => {
+       console.log('Selected object:', currobject);
+     });
+  
   gui.add(controls, 'Load Scene');
   gui.addColor(controls, 'color');
 
@@ -63,7 +71,6 @@ function main() {
   loadScene();
 
   const camera = new Camera(vec3.fromValues(0, 0, 5), vec3.fromValues(0, 0, 0));
-
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
   gl.enable(gl.DEPTH_TEST);
@@ -79,25 +86,46 @@ function main() {
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
-    if(controls.tesselations != prevTesselations)
+    if(controls.tesselations != prevTesselations && controls.currobject == "Icosphere")
     {
       prevTesselations = controls.tesselations;
-      // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
-      // icosphere.create();
+      icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
+      icosphere.create();
     }
-    if (controls.color != prevColor)
+    if (controls.color != prevColor  && controls.currobject == "Cube")
     {
-      console.log(controls.color
-      );
       prevColor = controls.color;
       cube = new Cube(vec3.fromValues(0, 0, 0));
       cube.create();
+    } else if (controls.color != prevColor  && controls.currobject == "Square")
+    {
+      prevColor = controls.color;
+      square = new Square(vec3.fromValues(0, 0, 0));
+      square.create();
+    } else if (controls.color != prevColor  && controls.currobject == "Icosphere")
+    {
+      prevColor = controls.color;
+      icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
+      icosphere.create();
     }
-
+  
+    if (controls.currobject == "Cube")
     renderer.render(camera, lambert, [
       // icosphere,
       // square,
       cube,
+    ], controls.color);
+    if (controls.currobject == "Square")
+    renderer.render(camera, lambert, [
+      // icosphere,
+      square,
+      // cube,
+    ], controls.color);
+    if (controls.currobject == "Icosphere")
+    renderer.render(camera, lambert, [
+      icosphere,
+      // square,
+      // cube,
     ], controls.color);
     stats.end();
 
